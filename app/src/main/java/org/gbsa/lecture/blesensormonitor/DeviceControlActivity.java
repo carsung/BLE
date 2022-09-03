@@ -141,11 +141,9 @@ public class DeviceControlActivity extends AppCompatActivity {
                 String data = "{\"batt_state\":\"" + mDataField.getText() + "\"}";
                 MqttMessage message = new MqttMessage();
                 message.setPayload(data.getBytes());
-                try {
-                    mqttAndroidClient.publish(TOPIC, message);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+                // todo 9
+                // mqtt publish
             }
         });
 
