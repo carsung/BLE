@@ -162,8 +162,8 @@ public class DeviceControlActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(mDeviceName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        // Todo 2
+        // BluetoothLeService binding
     }
 
     @Override
