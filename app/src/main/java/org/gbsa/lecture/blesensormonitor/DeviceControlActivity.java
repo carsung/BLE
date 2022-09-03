@@ -51,9 +51,12 @@ public class DeviceControlActivity extends AppCompatActivity {
     private BluetoothGattCharacteristic mNotifyCharacteristic;
 
     MqttAndroidClient mqttAndroidClient;
-    private final static String SERVER_URI = "tcp://iot.amtel.co.kr";   //"tcp://broker.hivemq.com";
+    private final static String HIVEMQ_SERVER_URI = "tcp://broker.hivemq.com";
+    private final static String HIVEMQ_CLIENT_ID = "GBSA_TEST_01";
+    private final static String HIVEMQ_TOPIC = "gbsa/5g";
+    private final static String SERVER_URI = "tcp://iot.amtel.co.kr";
     private final static String CLIENT_ID = "GBSA_TEST_01";
-    private final static String TOPIC = "v1/devices/me/telemetry";  // "gbsa/5g";
+    private final static String TOPIC = "v1/devices/me/telemetry";
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
@@ -104,7 +107,9 @@ public class DeviceControlActivity extends AppCompatActivity {
                     // characteristic을 구하여
 
                     // todo 6
-                    // BluetoothLeService.readCharacteristic()으로 전달한다.
+                    // BluetoothLeService.readCharacteristic()으로 전달하고
+                    // characteristic data가 변경되면 처리될 수 있도록
+                    // mBluetoothLeService.setCharacteristicNotification()을 호출한다.
 
                     return true;
                 }
@@ -159,52 +164,9 @@ public class DeviceControlActivity extends AppCompatActivity {
             final boolean result = mBluetoothLeService.connect(mDeviceAddress);
             Log.d(TAG, "Connect request result=" + result);
         }
-        mqttAndroidClient = new MqttAndroidClient(this, SERVER_URI, CLIENT_ID);
-        MqttConnectOptions options = new MqttConnectOptions();
-        options.setUserName("gbsa_test_01");
-        try {
-            mqttAndroidClient.connect(options);
-            Log.i(TAG, "trying connect...");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        mqttAndroidClient.setCallback(new MqttCallbackExtended() {
-            @Override
-            public void connectComplete(boolean reconnect, String serverURI) {
-                Log.i(TAG, "connect to : " + serverURI);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(DeviceControlActivity.this, R.string.broker_connected, Toast.LENGTH_LONG).show();
-                    }
-                });
-
-                try {
-                    mqttAndroidClient.subscribe(TOPIC, 0, new IMqttMessageListener() {
-                        @Override
-                        public void messageArrived(String topic, MqttMessage message) throws Exception {
-                            Log.i(TAG, "subscribed msg : " + message);
-//                            tv.setText(new String(message.getPayload()));
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void connectionLost(Throwable cause) {
-                Log.i(TAG, "connectionLost");
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {}
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {}
-        });
-
+        // todo 8
+        // MqttAndroidClient.connect()를 이용하여 MQTT broker에 연결한다.
     }
 
     @Override
