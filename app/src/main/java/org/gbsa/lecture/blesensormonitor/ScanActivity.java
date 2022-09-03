@@ -65,24 +65,8 @@ public class ScanActivity extends AppCompatActivity implements AdapterView.OnIte
     };
 
     private void scanLeDevice(boolean scan) {
-        BluetoothManager bluetoothManager = getSystemService(BluetoothManager.class);
-        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
-        BluetoothLeScanner bluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
-        Log.i(TAG, "BluetoothLeScanner = " + bluetoothLeScanner);
-        if (scan) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    scanning = false;
-                    bluetoothLeScanner.stopScan(leScanCallback);
-                }
-            }, SCAN_PERIOD);
-
-            Log.i(TAG, "startScan()");
-            bluetoothLeScanner.startScan(leScanCallback);
-        } else {
-            bluetoothLeScanner.stopScan(leScanCallback);
-        }
+        // Todo 1.
+        // BluetoothLeScanner를 이용하여 scan을 시작한다.
     }
 
     @Override
