@@ -67,6 +67,7 @@ public class ScanActivity extends AppCompatActivity implements AdapterView.OnIte
     private void scanLeDevice(boolean scan) {
         // Todo 1.
         // BluetoothLeScanner를 이용하여 scan을 시작한다.
+        mBluetoothAdapter.getBluetoothLeScanner().startScan(leScanCallback);
     }
 
     @Override
