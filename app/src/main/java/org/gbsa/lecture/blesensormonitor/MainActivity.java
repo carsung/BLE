@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private final static int PERMISSION_REQUEST_BLUETOOTH = 0;
 
     private View mLayout;
+    private ArrayList mPermissionList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,19 +39,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startScanActivity() {
+        mPermissionList = new ArrayList<>();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+                != PackageManager.PERMISSION_GRANTED ) {
+            mPermissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT)
+                != PackageManager.PERMISSION_GRANTED ) {
+            mPermissionList.add(Manifest.permission.BLUETOOTH_CONNECT);
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN)
+                != PackageManager.PERMISSION_GRANTED ) {
+            mPermissionList.add(Manifest.permission.BLUETOOTH_SCAN);
+        }
+        if (mPermissionList.size() > 0 ) {
+            // Permission is missing and must be requested.
+            requestBluetoothPermissions();
+        } else {
             // Permission is already available, start camera preview
-
             Intent intent = new Intent(MainActivity.this, ScanActivity.class);
             startActivity(intent);
-        } else {
-            // Permission is missing and must be requested.
-            requestBluetoothPermissions();;
         }
     }
 
     private void requestBluetoothPermissions() {
+        String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.BLUETOOTH_SCAN};
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
             // Provide an additional rationale to the user if the permission was not granted
@@ -62,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     // Request the permission
                     ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            permissions,
                             PERMISSION_REQUEST_BLUETOOTH);
                 }
             }).show();
@@ -71,7 +86,8 @@ public class MainActivity extends AppCompatActivity {
             Snackbar.make(mLayout, R.string.bluetooth_unavailable, Snackbar.LENGTH_SHORT).show();
             // Request the permission. The result will be received in onRequestPermissionResult().
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_BLUETOOTH);
+                            permissions,
+                            PERMISSION_REQUEST_BLUETOOTH);
         }
     }
 
